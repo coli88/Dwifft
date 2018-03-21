@@ -76,6 +76,9 @@ public class AbstractDiffCalculator<Section: Equatable, Value: Equatable> {
             let diff = Dwifft.diff(lhs: oldSectionedValues, rhs: newSectionedValues)
             if (diff.count > 0) {
                 self.processChanges(newState: newSectionedValues, diff: diff)
+            } else {
+                _sectionedValues = newValue
+                self.reloadVisible()
             }
         }
     }
@@ -88,6 +91,10 @@ public class AbstractDiffCalculator<Section: Equatable, Value: Equatable> {
     // UITableView and UICollectionView both perform assertions on the *current* number of rows/items before performing any updates. As such, the `sectionedValues` property must be backed by an internal value that does not change until *after* `beginUpdates`/`performBatchUpdates` has been called.
     internal final var _sectionedValues: SectionedValues<Section, Value>
     internal func processChanges(newState: SectionedValues<Section, Value>, diff: [SectionedDiffStep<Section, Value>]){
+        fatalError("override me")
+    }
+
+    internal func reloadVisible() {
         fatalError("override me")
     }
 }

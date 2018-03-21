@@ -44,6 +44,13 @@ public final class TableViewDiffCalculator<Section: Equatable, Value: Equatable>
         }
         tableView.endUpdates()
     }
+
+    override internal func reloadVisible() {
+        guard let tableView = self.tableView, let visibleRows = tableView.indexPathsForVisibleRows else { return }
+        UIView.performWithoutAnimation {
+            tableView.reloadRows(at: visibleRows, with: UITableViewRowAnimation.none)
+        }
+    }
 }
 
 /// This class manages a `UICollectionView`'s items and sections. It will make the necessary
@@ -77,6 +84,13 @@ public final class CollectionViewDiffCalculator<Section: Equatable, Value: Equat
                 }
             }
         }, completion: nil)
+    }
+
+    override internal func reloadVisible() {
+        guard let collectionView = self.collectionView else { return }
+        UIView.performWithoutAnimation {
+            collectionView.reloadItems(at: collectionView.indexPathsForVisibleItems)
+        }
     }
 }
 
