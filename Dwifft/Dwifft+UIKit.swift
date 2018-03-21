@@ -83,7 +83,9 @@ public final class CollectionViewDiffCalculator<Section: Equatable, Value: Equat
                 case let .sectionInsert(section, _): collectionView.insertSections(IndexSet(integer: section))
                 }
             }
-        }, completion: nil)
+        }, completion: { _ in
+            self.reloadVisible()
+        })
     }
 
     override internal func reloadVisible() {
