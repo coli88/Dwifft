@@ -53,6 +53,20 @@ public final class TableViewDiffCalculator<Section: Equatable, Value: Equatable>
     }
 }
 
+public protocol CellUpdateProtocol: class {
+    associatedtype CellData
+
+    func updateCell(with cellData: CellData)
+    func updateCellAccessibilityIds(withPrefix prefix: String)
+}
+
+extension UICollectionViewCell: CellUpdateProtocol {
+    @objc open func updateCellAccessibilityIds(withPrefix prefix: String) {
+    }
+    @objc open func updateCell(with cellData: AnyObject) {
+    }
+}
+
 /// This class manages a `UICollectionView`'s items and sections. It will make the necessary
 /// calls to the collection view to ensure that its UI is kept in sync with the contents 
 /// of the `sectionedValues` property.
@@ -90,8 +104,9 @@ public final class CollectionViewDiffCalculator<Section: Equatable, Value: Equat
 
     override internal func reloadVisible() {
         guard let collectionView = self.collectionView else { return }
-        UIView.performWithoutAnimation {
-            collectionView.reloadItems(at: collectionView.indexPathsForVisibleItems)
+        for indexPath in collectionView.indexPathsForVisibleItems {
+            let cellData = _sectionedValues.sectionsAndValues[indexPath.section].1[indexPath.row]
+            collectionView.cellForItem(at: indexPath)?.updateCell(with: cellData as AnyObject)
         }
     }
 }
