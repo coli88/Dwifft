@@ -87,21 +87,19 @@ public final class CollectionViewDiffCalculator<Section: Equatable, Value: Equat
 
     override internal func processChanges(newState: SectionedValues<Section, Value>, diff: [SectionedDiffStep<Section, Value>]) {
         guard let collectionView = self.collectionView else { return }
-        UIView.performWithoutAnimation {
-            collectionView.performBatchUpdates({
-                self._sectionedValues = newState
-                for result in diff {
-                    switch result {
-                    case let .delete(section, row, _): collectionView.deleteItems(at: [IndexPath(row: row, section: section)])
-                    case let .insert(section, row, _): collectionView.insertItems(at: [IndexPath(row: row, section: section)])
-                    case let .sectionDelete(section, _): collectionView.deleteSections(IndexSet(integer: section))
-                    case let .sectionInsert(section, _): collectionView.insertSections(IndexSet(integer: section))
-                    }
+        collectionView.performBatchUpdates({
+            self._sectionedValues = newState
+            for result in diff {
+                switch result {
+                case let .delete(section, row, _): collectionView.deleteItems(at: [IndexPath(row: row, section: section)])
+                case let .insert(section, row, _): collectionView.insertItems(at: [IndexPath(row: row, section: section)])
+                case let .sectionDelete(section, _): collectionView.deleteSections(IndexSet(integer: section))
+                case let .sectionInsert(section, _): collectionView.insertSections(IndexSet(integer: section))
                 }
-            }, completion: { _ in
-                self.reloadVisible()
-            })
-        }
+            }
+        }, completion: { _ in
+            self.reloadVisible()
+        })
     }
 
     override internal func reloadVisible() {
